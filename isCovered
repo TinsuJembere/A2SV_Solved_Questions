@@ -1,0 +1,13 @@
+class Solution:
+    def isCovered(self, ranges: List[List[int]], left: int, right: int) -> bool:
+        for i in range(left, right + 1):
+            for j, k in ranges:
+                if i not in range(j, k + 1):
+                    covered = False
+                else:
+                    covered = True
+                    break
+            if covered == False:
+                return False
+        return True
+        
