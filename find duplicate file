@@ -1,0 +1,17 @@
+from collections import defaultdict
+
+class Solution:
+    def findDuplicate(self, paths: List[str]) -> List[List[str]]:
+        content_dict = defaultdict(list)
+        for entry in paths:
+            part = entry.split(" ")
+            path = part[0]
+            
+            for file_info in part[1:]:
+                name, content = file_info.split("(")
+                full_path = path + "/" + name
+                file_content = content[:-1]
+
+                content_dict[file_content].append(full_path)
+        return [group for group in content_dict.values() if len(group) > 1]
+
