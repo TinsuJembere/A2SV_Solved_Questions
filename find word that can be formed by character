@@ -1,0 +1,13 @@
+from collections import Counter
+
+class Solution:
+    def countCharacters(self, words: List[str], chars: str) -> int:
+        length_sum = 0
+        counter_chars = Counter(chars)
+
+        for word in words:
+            counter_word = Counter(word)
+            if all(counter_word[c] <= counter_chars[c] for c in counter_word):
+                length_sum += len(word)
+
+        return length_sum
