@@ -1,0 +1,19 @@
+from collections import defaultdict
+
+class Solution:
+    def subdomainVisits(self, cpdomains: List[str]) -> List[str]:
+        count_dict = defaultdict(int)
+
+        for entry in cpdomains:
+            visit_time, domain = entry.split()
+            visit_time = int(visit_time)
+
+            parts = domain.split(".")
+            for i in range(len(parts)):
+                subdomain = ".".join(parts[i:])
+                count_dict[subdomain] += visit_time
+            
+        return [f"{time} {domain}" for domain, time in count_dict.items()]
+
+            
+            
