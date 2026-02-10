@@ -1,0 +1,17 @@
+from collections import Counter
+
+class Solution:
+    def minSteps(self, s: str, t: str) -> int:
+        if len(s) != len(t):
+            return -1
+        counter_s = [0] * 26
+        counter_t = [0] * 26
+        res = 0
+        for i in range(len(s)):
+            counter_s[ord(s[i]) - ord("a")] += 1
+            counter_t[ord(t[i]) - ord("a")] += 1
+
+        for index, count in enumerate(counter_t):
+            if count > counter_s[index]:
+                res += (count - counter_s[index])
+        return res
