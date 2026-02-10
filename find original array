@@ -1,0 +1,18 @@
+from collections import Counter
+
+class Solution:
+    def findOriginalArray(self, changed: List[int]) -> List[int]:
+        if len(changed) % 2 != 0:
+            return []
+        res = []
+        counter = Counter(changed)
+        for x in sorted(counter):
+            if counter[x] > counter[2 * x]:
+                return []
+            if x == 0:
+                res.extend([0] * (counter[0] // 2))
+                counter[0] = 0
+            else:
+                res.extend([x] * counter[x])
+                counter[2*x] -= counter[x]
+        return res 
