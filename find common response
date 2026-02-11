@@ -1,0 +1,19 @@
+from collections import Counter
+
+class Solution:
+    def findCommonResponse(self, responses: List[List[str]]) -> str:
+        set_response = [set(inner_list) for inner_list in responses]
+        counter = Counter(
+            response 
+            for daily_response in set_response 
+            for response in daily_response
+        )
+
+        res = []
+        max_response = max(counter.values())
+
+        for response in counter:
+            if counter[response] == max_response:
+                res.append(response)
+
+        return min(res)
