@@ -1,0 +1,16 @@
+from collections import Counter
+
+class Solution:
+    def frequencySort(self, s: str) -> str:
+        counter = Counter(s)
+        bucket = [[] for _ in range(len(s) + 1)]
+
+        res = []
+        for char, count in counter.items():
+            bucket[count].append(char)
+        for freq in range(len(bucket) - 1, 0, -1):
+            for char in bucket[freq]:
+                res.append(char * freq)
+        return "".join(res)
+        
+        
