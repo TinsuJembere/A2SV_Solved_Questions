@@ -1,0 +1,13 @@
+class Solution:
+    def findValidPair(self, s: str) -> str:
+        counter = [0] * 9
+        for n in s:
+            counter[int(n) - 1] += 1
+
+        for i in range(len(s) - 1):
+            a, b = int(s[i]), int(s[i + 1])
+            if a != b and counter[a - 1] == a and counter[b - 1] == b:
+                return s[i:i+2]
+                
+        return ""
+        
