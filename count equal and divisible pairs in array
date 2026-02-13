@@ -1,0 +1,15 @@
+class Solution:
+    def countPairs(self, nums: List[int], k: int) -> int:
+        seen = {}
+        res = 0
+        for i, num in enumerate(nums):
+            if num in seen:
+                for j in seen[num]: 
+                    if (j * i) % k == 0:
+                        res += 1
+                seen[num].append(i)
+            else:
+                seen[num] = []
+                seen[num].append(i)
+        return res
+        
