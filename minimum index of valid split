@@ -1,0 +1,28 @@
+from collections import Counter
+
+class Solution:
+    def minimumIndex(self, nums: List[int]) -> int:
+        candidate = None
+        count = 0
+        n = len(nums)
+        for num in nums:
+            if count == 0:
+                candidate = num
+                count = 1
+            elif candidate == num:
+                count += 1
+            else:
+                count -= 1
+        total = nums.count(candidate)
+        left_count = 0
+        for i in range(n):
+            if nums[i] == candidate:
+                left_count += 1
+            right_count = total - left_count
+            left_length = i + 1
+            right_length = n - left_length
+
+            if left_count * 2 > left_length and right_count * 2 > right_length:
+                return i
+        return -1
+        
