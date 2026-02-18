@@ -1,0 +1,18 @@
+class Solution:
+    def largestPerimeter(self, nums: List[int]) -> int:
+        if len(nums) < 3:
+            return 0
+        max_num = max(nums)
+        count = [0] * (max_num + 1)
+        for num in nums:
+            count[num] += 1
+
+        sides = []
+        for length in range(max_num, 0, -1):
+            for _ in range(count[length]):
+                sides.append(length)
+                if len(sides) >= 3:
+                    a, b, c = sides[-1], sides[-2], sides[-3]
+                    if c < b + a:
+                        return a + b + c
+        return 0
