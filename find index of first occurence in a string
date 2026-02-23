@@ -1,0 +1,15 @@
+class Solution:
+    def strStr(self, haystack: str, needle: str) -> int:
+        if len(haystack) < len(needle):
+            return -1
+        if len(haystack) == len(needle):
+            return 0 if haystack == needle else -1
+
+        l, r = 0, len(needle) - 1
+
+        while r < len(haystack):
+            if haystack[l:r + 1] == needle:
+                return l
+            l += 1
+            r += 1
+        return -1
