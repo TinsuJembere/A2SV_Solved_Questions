@@ -1,0 +1,28 @@
+from collections import Counter
+
+class Solution:
+    def dividePlayers(self, skill: List[int]) -> int:
+        n = len(skill)
+        total = sum(skill)
+        teams = n // 2
+
+        if total % (n // 2) != 0:
+            return -1 
+        
+        target = total // (n // 2)
+
+        chemistry = 0
+        freq = Counter(skill)
+
+        for x in skill:
+            if freq[x] == 0:
+                continue
+            partner = target - x
+            
+            if freq[partner] == 0:
+                return -1
+            freq[x] -= 1
+            freq[partner] -= 1
+            chemistry += (x * partner)
+        
+        return chemistry
