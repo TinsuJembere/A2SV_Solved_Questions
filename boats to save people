@@ -1,0 +1,31 @@
+from collections import Counter
+
+class Solution:
+    def numRescueBoats(self, people: List[int], limit: int) -> int:
+        freq = [0] * (limit + 1)
+        n = len(people)
+        l, r = 0, limit
+        boat = 0
+
+        for p in people:
+            freq[p] += 1
+
+        while l <= r:
+            while l <= r and freq[l] == 0:
+                l += 1
+            while l <= r and freq[r] == 0:
+                r -= 1
+            
+            if l > r:
+                break
+
+            freq[r] -= 1
+            boat += 1
+
+            if l <= r and  l + r <= limit:
+                if l == r and freq[l] == 0:
+                    pass
+                else:
+                    freq[l] -= 1
+
+        return boat
