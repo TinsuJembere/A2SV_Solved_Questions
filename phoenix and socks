@@ -1,0 +1,116 @@
+import sys
+from collections import Counter
+
+def solve():
+    # Fast I/O
+    input = sys.stdin.read().split()
+    idx = 0
+    t = int(input[idx])
+    idx += 1
+    results = []
+
+    for _ in range(t):
+        n = int(input[idx])
+        l_count = int(input[idx+1])
+        r_count = int(input[idx+2])
+        idx += 3
+        
+        socks = list(map(int, input[idx : idx + n]))
+        idx += n
+        
+        left_socks = Counter(socks[:l_count])
+        right_socks = Counter(socks[l_count:])
+        
+        # 1. Remove existing pairs (Left and Right same color)
+        for color in left_socks:
+            if color in right_socks:
+                match = min(left_socks[color], right_socks[color])
+                left_socks[color] -= match
+                right_socks[color] -= match
+                l_count -= match
+                r_count -= match
+        
+        # Ensure 'left' is the side with more socks for easier logic
+        if r_count > l_count:
+            left_socks, right_socks = right_socks, left_socks
+            l_count, r_count = r_count, l_count
+            
+        cost = 0
+        diff = l_count - r_count # This is always even because n is even
+        to_flip = diff // 2
+        
+        # 2. Greedy Flip: Find pairs of same color on the heavy side
+        # Turning one of these into the other side creates a match for $1
+        for color in left_socks:
+            pairs_available = left_socks[color] // 2
+            if pairs_available > 0 and to_flip > 0:
+                take = min(pairs_available, to_flip)
+                cost += take
+                to_flip -= take
+                l_count -= 2 * take # 2 socks become a pair
+        
+        # 3. Remaining flips and recolors
+        # Any 'to_flip' left means we move a unique sock (cost 1) 
+        # plus the general cost to match the remaining unmatched pairs
+        cost += to_flip * 2 # Moving one and then needing to match it
+        
+        # After balancing sides to n/2 each, remaining socks on both sides 
+        # are matched by recoloring one side.
+        remaining_unmatched_pairs = (l_count + r_count) // 2
+        # But we already accounted for 'to_flip' which reduced l_count.
+        # The true remaining cost is:
+        # (flips to balance) + (remaining pairs to match)
+        
+        # Correct final calculation:
+        # Every flip used in step 2 cost 1 and fixed 2 socks.
+        # Any remaining difference (to_flip * 2) costs 2 per pair to fix.
+        # Then, every remaining sock on the left needs a partner on the right.
+        results.append(cost + r_count + (to_flip * 2 if to_flip > 0 else 0))
+
+    # The logic above simplifies to:
+    # cost = (cost of same-color flips) + (2 * remaining to_flip) + (remaining R)
+    # Let's provide a cleaner version of the final math:
+
+def optimized_solve():
+    input_data = sys.stdin.read().split()
+    if not input_data: return
+    it = iter(input_data)
+    t = int(next(it))
+    
+    for _ in range(t):
+        n, l, r = int(next(it)), int(next(it)), int(next(it))
+        colors = [int(next(it)) for _ in range(n)]
+        
+        L_map = Counter(colors[:l])
+        R_map = Counter(colors[l:])
+        
+        # Step 1: Neutralize pairs
+        for c in L_map:
+            if c in R_map:
+                m = min(L_map[c], R_map[c])
+                L_map[c] -= m
+                R_map[c] -= m
+                l -= m
+                r -= m
+        
+        if r > l:
+            L_map, R_map = R_map, L_map
+            l, r = r, l
+            
+        # l is now the heavy side
+        ans = 0
+        diff = l - r
+        # Step 2: Same-side pairs on the heavy side
+        for c in L_map:
+            can_fix = L_map[c] // 2
+            take = min(can_fix, diff // 2)
+            ans += take
+            diff -= 2 * take
+            l -= 2 * take
+            
+        # Step 3: diff is what's left to balance, l + r are remaining socks
+        ans += diff + (l + r - diff) // 2
+        print(ans)
+
+if __name__ == "__main__":
+    optimized_solve()
