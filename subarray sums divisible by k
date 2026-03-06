@@ -1,0 +1,19 @@
+from collections import defaultdict
+
+class Solution:
+    def subarraysDivByK(self, nums: List[int], k: int) -> int:
+        count = 0
+        prefix_mod = defaultdict(int)
+        prefix_mod[0] = 1  
+        current_sum = 0
+        
+        for num in nums:
+            current_sum += num
+            mod = current_sum % k
+            if mod < 0:  
+                mod += k
+            count += prefix_mod[mod]
+            prefix_mod[mod] += 1
+            
+        return count
+        
