@@ -1,0 +1,22 @@
+class Solution:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        stack = []
+        next_greater = {}
+        res = []
+
+        for i, n in enumerate(nums2):
+            while stack and stack[-1] < n:
+                next_greater[stack[-1]] = n
+                stack.pop()
+            stack.append(n)
+
+        for n in nums1:
+            if n in next_greater:
+                res.append(next_greater[n])
+            else:
+                res.append(-1)
+        return res
+
+
+
+        
