@@ -1,0 +1,25 @@
+class Solution:
+    def isPossible(self, houses, heaters, mid):
+        i = 0
+        j = 0
+        while i < len(houses) and j < len(heaters):
+            if abs(houses[i] - heaters[j]) <= mid:
+                i += 1
+            else:
+                j += 1
+        return i >= len(houses)
+    def findRadius(self, houses, heaters):
+        low = 0
+        high = int(1e9)
+        houses.sort()
+        heaters.sort()
+        minRadius = 0
+        while low <= high:
+            mid = low + (high - low) // 2
+            if self.isPossible(houses, heaters, mid):
+                minRadius = mid
+                high = mid - 1
+            else:
+                low = mid + 1
+
+        return minRadius
