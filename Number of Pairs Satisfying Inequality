@@ -1,0 +1,34 @@
+from typing import List
+
+class BinaryIndexedTree:
+    def __init__(self, n: int) -> None:
+        self.n = n
+        self.c = [0] * (n + 1)
+
+    @staticmethod
+    def lowbit(x: int) -> int:
+        return x & -x
+
+    def update(self, x: int, delta: int) -> None:
+        while x <= self.n:
+            self.c[x] += delta
+            x += BinaryIndexedTree.lowbit(x)
+
+    def query(self, x: int) -> int:
+        sum_value = 0
+        while x > 0:
+            sum_value += self.c[x]
+            x -= BinaryIndexedTree.lowbit(x)
+        return sum_value
+
+class Solution:
+    def numberOfPairs(self, nums1: List[int], nums2: List[int], diff: int) -> int:
+        tree = BinaryIndexedTree(100000)
+        answer = 0
+
+        for a, b in zip(nums1, nums2):
+            value = a - b
+            answer += tree.query(value + diff + 40000)
+            tree.update(value + 40000, 1)
+
+        return answer
