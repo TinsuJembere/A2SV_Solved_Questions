@@ -1,0 +1,67 @@
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def maxSumBST(self, root: Optional[TreeNode]) -> int:
+        """
+        Find the maximum sum of all keys of any sub-tree which is also a Binary Search Tree (BST).
+      
+        Args:
+            root: Root node of the binary tree
+          
+        Returns:
+            Maximum sum of any BST subtree in the tree
+        """
+      
+        def dfs(node: Optional[TreeNode]) -> tuple[int, int, int, int]:
+            """
+            Perform DFS to check if subtree is BST and calculate sum.
+          
+            Args:
+                node: Current node being processed
+              
+            Returns:
+                Tuple of (is_bst, min_value, max_value, sum_of_subtree)
+                - is_bst: 1 if subtree is valid BST, 0 otherwise
+                - min_value: Minimum value in the subtree
+                - max_value: Maximum value in the subtree
+                - sum_of_subtree: Sum of all nodes in the subtree
+            """
+            # Base case: empty node is a valid BST
+            if node is None:
+                return 1, float('inf'), float('-inf'), 0
+          
+            # Recursively process left and right subtrees
+            left_is_bst, left_min, left_max, left_sum = dfs(node.left)
+            right_is_bst, right_min, right_max, right_sum = dfs(node.right)
+          
+            # Check if current subtree forms a valid BST
+            # Conditions: both subtrees are BSTs and current node value is in valid range
+            if left_is_bst and right_is_bst and left_max < node.val < right_min:
+                # Calculate sum of current BST subtree
+                current_sum = left_sum + right_sum + node.val
+              
+                # Update global maximum sum
+                nonlocal max_sum
+                max_sum = max(max_sum, current_sum)
+              
+                # Return BST properties for current subtree
+                return (1, 
+                        min(left_min, node.val),  # Minimum value in subtree
+                        max(right_max, node.val),  # Maximum value in subtree
+                        current_sum)               # Sum of subtree
+          
+            # Current subtree is not a valid BST
+            return 0, 0, 0, 0
+      
+        # Initialize maximum sum to 0 (empty BST has sum 0)
+        max_sum = 0
+      
+        # Start DFS traversal from root
+        dfs(root)
+      
+        return max_sum
