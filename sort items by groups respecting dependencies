@@ -1,0 +1,57 @@
+from collections import defaultdict, deque
+
+class Solution:
+    def sortItems(self, n: int, m: int, group: List[int], beforeItems: List[List[int]]) -> List[int]:
+        # Step 1: Assign unique groups to -1 items
+        for i in range(n):
+            if group[i] == -1:
+                group[i] = m
+                m += 1
+        
+        # Step 2: Build graphs
+        item_graph = defaultdict(list)
+        item_indegree = [0] * n
+        group_graph = defaultdict(list)
+        group_indegree = [0] * m
+        
+        for i in range(n):
+            for prev in beforeItems[i]:
+                # Item level dependency
+                item_graph[prev].append(i)
+                item_indegree[i] += 1
+                # Group level dependency
+                if group[i] != group[prev]:
+                    group_graph[group[prev]].append(group[i])
+                    group_indegree[group[i]] += 1
+        
+        # Step 3: Helper for Topological Sort
+        def topo_sort(nodes, graph, indegree):
+            queue = deque([node for node in nodes if indegree[node] == 0])
+            res = []
+            while queue:
+                curr = queue.popleft()
+                res.append(curr)
+                for neighbor in graph[curr]:
+                    indegree[neighbor] -= 1
+                    if indegree[neighbor] == 0:
+                        queue.append(neighbor)
+            return res if len(res) == len(nodes) else []
+
+        # Step 4: Sort items and groups
+        item_order = topo_sort(range(n), item_graph, item_indegree)
+        group_order = topo_sort(range(m), group_graph, group_indegree)
+        
+        if not item_order or not group_order:
+            return []
+        
+        # Step 5: Group items together based on sorted item order
+        ordered_groups = defaultdict(list)
+        for item in item_order:
+            ordered_groups[group[item]].append(item)
+            
+        # Step 6: Final result based on sorted group order
+        ans = []
+        for g_id in group_order:
+            ans.extend(ordered_groups[g_id])
+            
+        return ans
