@@ -1,0 +1,25 @@
+from collections import defaultdict
+
+class Solution:
+    def getAncestors(self, n: int, edges: list[list[int]]) -> list[list[int]]:
+        # 1. Build the adjacency list
+        graph = defaultdict(list)
+        for u, v in edges:
+            graph[u].append(v)
+        
+        ans = [[] for _ in range(n)]
+
+        # 2. DFS function to find all descendants of a starting ancestor
+        def dfs(start_node, current_node, visited):
+            visited.add(current_node)
+            for neighbor in graph[current_node]:
+                if neighbor not in visited:
+                    # 'start_node' is an ancestor of 'neighbor'
+                    ans[neighbor].append(start_node)
+                    dfs(start_node, neighbor, visited)
+
+        # 3. For every node i, find all nodes it can reach
+        for i in range(n):
+            dfs(i, i, set())
+            
+        return ans
