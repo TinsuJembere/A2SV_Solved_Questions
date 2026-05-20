@@ -1,0 +1,45 @@
+import collections
+import math
+
+class UnionFind:
+    def __init__(self, size):
+        self.parent = list(range(size))
+    
+    def find(self, i):
+        if self.parent[i] != i:
+            self.parent[i] = self.find(self.parent[i])
+        return self.parent[i]
+    
+    def union(self, i, j):
+        root_i = self.find(i)
+        root_j = self.find(j)
+        if root_i != root_j:
+            self.parent[root_i] = root_j
+
+class Solution:
+    def largestComponentSize(self, nums: list[int]) -> int:
+        max_val = max(nums)
+        uf = UnionFind(max_val + 1)
+        
+        # Factorize each number and union it with its prime factors
+        for num in nums:
+            temp = num
+            factor = 2
+            while factor * factor <= temp:
+                if temp % factor == 0:
+                    uf.union(num, factor)
+                    while temp % factor == 0:
+                        temp //= factor
+                factor += 1
+            if temp > 1:  # Remaining prime factor
+                uf.union(num, temp)
+        
+        # Group components and find the maximum size
+        count = collections.Counter()
+        ans = 0
+        for num in nums:
+            root = uf.find(num)
+            count[root] += 1
+            ans = max(ans, count[root])
+            
+        return ans
